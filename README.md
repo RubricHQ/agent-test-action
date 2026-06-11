@@ -18,11 +18,11 @@ jobs:
   agent-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: noorsy/agent-test-action@v1
+      - uses: RubricHQ/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
-          tags: smoke-test
+          scenario_ids: "123,456"
 ```
 
 The action triggers a test run, polls the RubricHQ API until all scenarios complete, writes a pass/fail summary to the job summary panel, and exits non-zero if the verdict is `failed` — blocking any downstream jobs.
@@ -35,7 +35,7 @@ The action triggers a test run, polls the RubricHQ API until all scenarios compl
 2. **Save the key as a GitHub secret** — in your repo go to **Settings → Secrets and variables → Actions → New repository secret**, name it `RUBRICHQ_API_KEY`, and paste the key.
 3. **Find your agent ID** — open the agent in the RubricHQ app; the ID appears in the URL (`/agents/42/...`).
 4. **Save the agent ID as a repo variable** — under **Settings → Secrets and variables → Actions → Variables → New repository variable**, name it `RUBRICHQ_AGENT_ID`.
-5. **Tag your scenarios** — in the RubricHQ scenario editor, add tags (e.g. `smoke-test`, `regression`) to the scenarios you want to run in CI.
+5. **Find your scenario IDs** — open each scenario you want to run in CI; the ID appears in the URL. Pass them to the action as `scenario_ids` (comma-separated). Optionally, also tag scenarios and pass `tags` to include extra scenarios on top.
 
 ---
 
@@ -45,8 +45,8 @@ The action triggers a test run, polls the RubricHQ API until all scenarios compl
 |---|---|---|---|
 | `api_key` | Yes | — | RubricHQ API key. Store as a GitHub secret. |
 | `agent_id` | Yes | — | Numeric ID of the agent under test. |
-| `scenario_ids` | No | `""` | Comma-separated scenario IDs to run. At least one of `scenario_ids` or `tags` is required. |
-| `tags` | No | `""` | Comma-separated scenario tags to run. At least one of `scenario_ids` or `tags` is required. |
+| `scenario_ids` | **Yes** | — | Comma-separated scenario IDs to run (e.g. `123,456`). |
+| `tags` | No | `""` | Optional. Comma-separated scenario tags to *also* include, on top of `scenario_ids`. |
 | `frequency` | No | `"1"` | How many times to run each scenario (1–5). Higher values smooth out flakiness at the cost of run time. |
 | `success_threshold` | No | `"100"` | Minimum pass rate percentage (0–100) required for the run to be marked `passed`. |
 | `timeout` | No | `"3600"` | Maximum seconds to wait for the test run to complete before the action errors out. |
@@ -82,11 +82,11 @@ jobs:
   agent-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: noorsy/agent-test-action@v1
+      - uses: RubricHQ/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
-          tags: smoke-test
+          scenario_ids: "123,456"
           success_threshold: "80"
 
   deploy:
@@ -132,11 +132,11 @@ jobs:
       report_url: ${{ steps.tests.outputs.report_url }}
     steps:
       - id: tests
-        uses: noorsy/agent-test-action@v1
+        uses: RubricHQ/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY_STAGING }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID_STAGING }}
-          tags: regression
+          scenario_ids: "123,456"
           frequency: "3"
           success_threshold: "90"
 
@@ -144,11 +144,11 @@ jobs:
     needs: test-staging
     runs-on: ubuntu-latest
     steps:
-      - uses: noorsy/agent-test-action@v1
+      - uses: RubricHQ/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY_PROD }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID_PROD }}
-          tags: smoke-test
+          scenario_ids: "123,456"
           success_threshold: "100"
 
   promote:

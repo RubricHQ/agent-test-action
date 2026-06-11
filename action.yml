@@ -12,9 +12,8 @@ inputs:
     description: "ID of the agent under test"
     required: true
   scenario_ids:
-    description: "Comma-separated scenario IDs to run (at least one of scenario_ids / tags required)"
-    required: false
-    default: ""
+    description: "Comma-separated scenario IDs to run (required)"
+    required: true
   tags:
     description: "Comma-separated scenario tags to run (at least one of scenario_ids / tags required)"
     required: false

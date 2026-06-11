@@ -10,8 +10,8 @@ if [[ -z "${API_KEY:-}" || -z "${AGENT_ID:-}" ]]; then
   echo "::error::api_key and agent_id are required" >&2
   exit 1
 fi
-if [[ -z "${SCENARIO_IDS:-}" && -z "${TAGS:-}" ]]; then
-  echo "::error::Provide scenario_ids and/or tags" >&2
+if [[ -z "${SCENARIO_IDS:-}" ]]; then
+  echo "::error::scenario_ids is required" >&2
   exit 1
 fi
 
