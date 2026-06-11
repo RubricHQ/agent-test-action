@@ -1,0 +1,77 @@
+name: "RubricHQ Agent Tests"
+description: "Run RubricHQ voice/text agent test scenarios and gate the workflow on the result"
+branding:
+  icon: phone-call
+  color: purple
+
+inputs:
+  api_key:
+    description: "RubricHQ API key (create one under Settings → API Keys)"
+    required: true
+  agent_id:
+    description: "ID of the agent under test"
+    required: true
+  scenario_ids:
+    description: "Comma-separated scenario IDs to run (at least one of scenario_ids / tags required)"
+    required: false
+    default: ""
+  tags:
+    description: "Comma-separated scenario tags to run (at least one of scenario_ids / tags required)"
+    required: false
+    default: ""
+  frequency:
+    description: "How many times to run each scenario (1-5)"
+    required: false
+    default: "1"
+  success_threshold:
+    description: "Minimum pass rate percentage (0-100) for the run to pass"
+    required: false
+    default: "100"
+  timeout:
+    description: "Maximum seconds to wait for the test run to finish"
+    required: false
+    default: "3600"
+  poll_interval:
+    description: "Seconds between status polls"
+    required: false
+    default: "15"
+  channel:
+    description: "Channel to test over: phone, web, or text (default: the agent's configured channel)"
+    required: false
+    default: ""
+  api_url:
+    description: "RubricHQ API base URL"
+    required: false
+    default: "https://api.rubrichq.io"
+
+outputs:
+  test_run_id:
+    description: "ID of the triggered test run"
+    value: ${{ steps.run.outputs.test_run_id }}
+  verdict:
+    description: "Final verdict: passed or failed"
+    value: ${{ steps.run.outputs.verdict }}
+  pass_rate:
+    description: "Pass rate percentage"
+    value: ${{ steps.run.outputs.pass_rate }}
+  report_url:
+    description: "Link to the full report in the RubricHQ app"
+    value: ${{ steps.run.outputs.report_url }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        API_KEY: ${{ inputs.api_key }}
+        AGENT_ID: ${{ inputs.agent_id }}
+        SCENARIO_IDS: ${{ inputs.scenario_ids }}
+        TAGS: ${{ inputs.tags }}
+        FREQUENCY: ${{ inputs.frequency }}
+        SUCCESS_THRESHOLD: ${{ inputs.success_threshold }}
+        TIMEOUT: ${{ inputs.timeout }}
+        POLL_INTERVAL: ${{ inputs.poll_interval }}
+        CHANNEL: ${{ inputs.channel }}
+        API_URL: ${{ inputs.api_url }}
+      run: bash "${GITHUB_ACTION_PATH}/scripts/run_tests.sh"
