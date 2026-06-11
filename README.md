@@ -18,7 +18,7 @@ jobs:
   agent-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: rubrichq/agent-test-action@v1
+      - uses: noorsy/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
@@ -82,7 +82,7 @@ jobs:
   agent-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: rubrichq/agent-test-action@v1
+      - uses: noorsy/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
@@ -132,7 +132,7 @@ jobs:
       report_url: ${{ steps.tests.outputs.report_url }}
     steps:
       - id: tests
-        uses: rubrichq/agent-test-action@v1
+        uses: noorsy/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY_STAGING }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID_STAGING }}
@@ -144,7 +144,7 @@ jobs:
     needs: test-staging
     runs-on: ubuntu-latest
     steps:
-      - uses: rubrichq/agent-test-action@v1
+      - uses: noorsy/agent-test-action@v1
         with:
           api_key: ${{ secrets.RUBRICHQ_API_KEY_PROD }}
           agent_id: ${{ vars.RUBRICHQ_AGENT_ID_PROD }}
