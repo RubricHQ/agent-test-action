@@ -15,7 +15,7 @@ inputs:
     description: "Comma-separated scenario IDs to run (required)"
     required: true
   tags:
-    description: "Comma-separated scenario tags to run (at least one of scenario_ids / tags required)"
+    description: "Comma-separated scenario tags to also run, in addition to scenario_ids (optional)"
     required: false
     default: ""
   frequency:
