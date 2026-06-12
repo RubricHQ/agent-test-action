@@ -51,7 +51,7 @@ The action triggers a test run, polls the RubricHQ API until all scenarios compl
 | `success_threshold` | No | `"100"` | Minimum pass rate percentage (0–100) required for the run to be marked `passed`. |
 | `timeout` | No | `"3600"` | Maximum seconds to wait for the test run to complete before the action errors out. |
 | `poll_interval` | No | `"15"` | Seconds between status polls while waiting for the run to finish. |
-| `channel` | No | `""` | Channel to test over: `phone`, `web`, or `text`. Defaults to the agent's configured channel. |
+| `channel` | No | `""` | Channel to test over: `phone`, `web`, or `text`. If omitted, defaults to `phone` when the agent has a phone number, otherwise `web`. |
 | `api_url` | No | `"https://api.rubrichq.io"` | RubricHQ API base URL. Override for self-hosted or staging environments. |
 
 ---

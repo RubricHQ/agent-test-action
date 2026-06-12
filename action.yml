@@ -35,7 +35,7 @@ inputs:
     required: false
     default: "15"
   channel:
-    description: "Channel to test over: phone, web, or text (default: the agent's configured channel)"
+    description: "Channel to test over: phone, web, or text. Default: phone if the agent has a phone number, otherwise web."
     required: false
     default: ""
   api_url:
