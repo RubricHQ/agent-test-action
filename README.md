@@ -67,6 +67,67 @@ The action triggers a test run, polls the RubricHQ API until all scenarios compl
 
 ---
 
+## Choosing a channel (web / phone / text)
+
+The `channel` input controls how the agent is exercised:
+
+- `web` — a browser/WebSocket voice call
+- `phone` — a real phone call placed over Twilio (the agent must have a phone number)
+- `text` — a text-only conversation
+
+If you omit `channel`, it defaults to `phone` when the agent has a phone number, otherwise `web`.
+
+**Run over web:**
+
+```yaml
+- uses: RubricHQ/agent-test-action@v1
+  with:
+    api_key: ${{ secrets.RUBRICHQ_API_KEY }}
+    agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
+    scenario_ids: "12,15,22"
+    channel: web
+```
+
+**Run over phone:**
+
+```yaml
+- uses: RubricHQ/agent-test-action@v1
+  with:
+    api_key: ${{ secrets.RUBRICHQ_API_KEY }}
+    agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
+    scenario_ids: "12,15,22"
+    channel: phone
+```
+
+**Test both channels in one workflow** — use two jobs so each channel reports independently and either failing blocks the deploy:
+
+```yaml
+jobs:
+  web-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: RubricHQ/agent-test-action@v1
+        with:
+          api_key: ${{ secrets.RUBRICHQ_API_KEY }}
+          agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
+          scenario_ids: "12,15,22"
+          channel: web
+
+  phone-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: RubricHQ/agent-test-action@v1
+        with:
+          api_key: ${{ secrets.RUBRICHQ_API_KEY }}
+          agent_id: ${{ vars.RUBRICHQ_AGENT_ID }}
+          scenario_ids: "12,15,22"
+          channel: phone
+```
+
+The two jobs run in parallel. If you'd rather phone failures not block the deploy while you stabilize them, add `continue-on-error: true` to the phone job's step.
+
+---
+
 ## Gating a deploy
 
 Use `needs: agent-tests` to prevent the deploy job from running unless the agent tests pass:
